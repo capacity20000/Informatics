@@ -20,8 +20,7 @@ public class ParsLamoda {
         ArrayList<String> prices = new ArrayList<>();
         ArrayList<String> links = new ArrayList<>();
         ArrayList<String> products = new ArrayList<>();
-        ArrayList<String> textFile = (ArrayList<String>) Files.readAllLines(Paths.get("clothes_lamoda.txt"));
-        Matcher pr;
+        ArrayList<String> textFile = (ArrayList<String>) Files.readAllLines(Paths.get(fileLink));
         for (String product : textFile) {
             names.add(getProduct(product, reg_name));
             prices.add(getProduct(product, reg_price));
@@ -33,16 +32,28 @@ public class ParsLamoda {
             }
         }
 
-        return products;
+        return names;
     }
 
     private String getProduct(String product, String reg) {
-        Matcher pr;
-        pr = Pattern.compile(reg).matcher(product);
-        String s = "";
+        Matcher pr = Pattern.compile(reg).matcher(product);
         while (pr.find()) {
-            s += product.substring(pr.start(), pr.end());
+            String s = product.substring(pr.start(), pr.end());
+            if (isCorrectString(s)) {
+                return s;
+            }
         }
-        return s;
+        return "Error";
+    }
+
+    private boolean isCorrectString(String s) {
+        if (s.length() > 0) {
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) != ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
