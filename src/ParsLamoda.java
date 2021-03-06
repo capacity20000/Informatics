@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 
 public class ParsLamoda {
     private String fileLink;
-    private String reg_name = "([A-ZА-Я][A-ZА-Яa-zа-я]+\\s?)*([A-ZА-Я][A-ZА-Яa-zа-я]+)(?=\\n)";
+    private String reg_name = "(?<=alt=\").*(?=, цвет:)";
     private String reg_price = "(?<=;)\\d+(?=&quot;}])";
-    private String reg_link = "(?<=<view-source:).*lamoda.*(?=>)";
+    private String reg_link = "(?<=<view-source:).*www\\.lamoda\\.ru\\/p\\/.*(?=>)";
 
     public ParsLamoda(String fileLink) {
         this.fileLink = fileLink;
@@ -21,18 +21,29 @@ public class ParsLamoda {
         ArrayList<String> links = new ArrayList<>();
         ArrayList<String> products = new ArrayList<>();
         ArrayList<String> textFile = (ArrayList<String>) Files.readAllLines(Paths.get(fileLink));
+        String s;
         for (String product : textFile) {
-            names.add(getProduct(product, reg_name));
-            prices.add(getProduct(product, reg_price));
-            links.add(getProduct(product, reg_link));
+            s = getProduct(product, reg_name);
+            if (isCorrectString(s)) {
+                names.add(withoutCommas(s));
+            }
+            s = getProduct(product, reg_price);
+            if (isCorrectString(s)) {
+                prices.add(s);
+            }
+            s = getProduct(product, reg_link);
+            if (isCorrectString(s)) {
+                links.add(s);
+            }
         }
+
         if ((names.size() == prices.size()) && (names.size() == links.size())) {
             for (int i = 0; i < names.size(); i++) {
                 products.add(names.get(i) + ", " + prices.get(i) + " rub, " + links.get(i));
             }
         }
 
-        return names;
+        return products;
     }
 
     private String getProduct(String product, String reg) {
@@ -43,7 +54,7 @@ public class ParsLamoda {
                 return s;
             }
         }
-        return "Error";
+        return "";
     }
 
     private boolean isCorrectString(String s) {
@@ -55,5 +66,15 @@ public class ParsLamoda {
             }
         }
         return false;
+    }
+
+    private String withoutCommas(String s) {
+        String a = "";
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) != ',') {
+                a += s.charAt(i);
+            }
+        }
+        return a;
     }
 }

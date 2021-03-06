@@ -1,5 +1,5 @@
-name: ([A-ZА-Я][A-ZА-Яa-zа-я]+\s?)*([A-ZА-Я][A-ZА-Яa-zа-я]+)(?=\n)
+name: (?<=alt=").*(?=, цвет:)
 
 price: (?<=;)\d+(?=&quot;}])
 
-link: (?<=<view-source:).*lamoda.*(?=>)
+link: (?<=<view-source:).*www\.lamoda\.ru\/p\/.*(?=>)
