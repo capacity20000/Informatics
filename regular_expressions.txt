@@ -1,5 +1,5 @@
 name: ([A-ZА-Я][A-ZА-Яa-zа-я]+\s?)*([A-ZА-Я][A-ZА-Яa-zа-я]+)(?=\n)
 
-price: 
+price: (?<=;)\d+(?=&quot;}])
 
 link: 
